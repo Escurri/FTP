@@ -1,0 +1,37 @@
+OBTENER ARCHIVOS DE FTP
+
+
+#!/bin/bash
+Información de configuración #SFTP
+ #username
+USER=root
+ #Contraseña
+PASSWORD=5EYS40T04BMF
+ # Directorio raíz del archivo a cargar
+SRCDIR=/u02/dab/sftpFiles
+ Directorio #FTP
+DESDIR=/u01/sftpFiles
+#IP
+IP=192.168.10.11
+ #Puerto
+PORT=22022
+ 
+ #Obtener el archivo
+cd ${SRCDIR} ;
+ # Todos los archivos en el directorio
+#FILES=`ls` 
+ # El archivo xml cuyo tiempo de modificación es cinco minutos antes del tiempo de ejecución
+FILES=`find ${SRCDIR} -mmin -50 -name '*.xml'`
+ 
+for FILE in ${FILES}
+do
+    echo ${FILE}
+ #Enviar archivo (parte clave)
+lftp -u ${USER},${PASSWORD} sftp://${IP}:${PORT} <<EOF
+cd ${DESDIR}/
+lcd ${SRCDIR}
+put ${FILE}
+by
+EOF
+ 
+done
